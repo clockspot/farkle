@@ -7,9 +7,13 @@ from collections import Counter
 
 #Settings
 fewestDiceToRoll = 3 #the risk factor! don't roll fewer than this, lest you farkle
+#winPoints = 10000
+winPoints = False #switch these lines to have it stop after winPoints
 
 #Let's go!
 try:
+    overallPoints = 0
+    numTurns = 0
     while 1: #loop of turns
         rolls = 0
         dice = [0,0,0,0,0,0]
@@ -32,11 +36,8 @@ try:
             if len(Counter(dice)) == 6: #six discrete dice values counted
                 points += 1500
                 print('   Found a flush! Turn score: '+str(points));
-                #Keep all and start over
-                continue
                 dice = [] #remove all six dice
                 kept = True
-                #TEST: 132465
 
             #is there three pair?
             ctPairs = Counter(dice) #get counts per dice value
@@ -48,7 +49,6 @@ try:
                 print('   Found three pair! Turn score: '+str(points));
                 dice = []
                 kept = True
-                #TEST: 154415
 
             #is there three (or more) of a kind?
             while 1: #loop because this condition could be met twice
@@ -72,10 +72,6 @@ try:
                     kept = True
                 else:
                     break
-            #TEST: 331345 #three 3s
-            #TEST: 414454 #four 4s
-            #TEST: 565555 #five 5s
-            #TEST: 331311 #three 3s and three 1s - should loop twice
 
             #Now for counters, if there are any
             onlyCtrs = [x for x in dice if x==1 or x==5]
@@ -131,17 +127,23 @@ try:
 
             #if we did keep something, decide whether to continue
             if len(dice) == 0: #restore all six dice for next roll
-                print("   Roll 'em all again!")
+                #print("   Roll 'em all again!")
                 dice = [0,0,0,0,0,0]
             elif len(dice) < fewestDiceToRoll:
                 print("   That leaves "+str(len(dice))+" di"+('' if len(dice)==1 else 'c')+"e, so ending turn here.")
                 break; #end the turn
 
+            #raw_input("   Press return to roll "+str(len(dice))+" di"+('' if len(dice)==1 else 'c')+"e")
+
         #end loop of rolls
         print('')
         print('Final turn score: '+str(points))
+        overallPoints += points
+        numTurns += 1
+        print('Overall score ('+str(numTurns)+' turn'+('' if numTurns==1 else 's')+'): '+str(overallPoints))
         print('')
-        raw_input("Press return to do another turn, or Ctrl+C to quit:")
+        if winPoints != False and overallPoints > winPoints: break
+        raw_input("Press return to do another turn, or Ctrl+C to quit")
     #end loop of turns
 
 except KeyboardInterrupt:
