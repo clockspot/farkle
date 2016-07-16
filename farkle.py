@@ -32,10 +32,10 @@ try:
             #analyze results and see if we want to keep any
             kept = False
 
-            #is there a flush?
+            #is there a straight?
             if len(Counter(dice)) == 6: #six discrete dice values counted
                 points += 1500
-                print('   Found a flush! Turn score: '+str(points));
+                print('   Found a straight! Turn score: '+str(points));
                 dice = [] #remove all six dice
                 kept = True
 
@@ -49,6 +49,7 @@ try:
                 print('   Found three pair! Turn score: '+str(points));
                 dice = []
                 kept = True
+            #TODO: Dad says it should decide to skip three 2s if there is a 1 counter to be had instead – would that perform better?
 
             #is there three (or more) of a kind?
             while 1: #loop because this condition could be met twice
